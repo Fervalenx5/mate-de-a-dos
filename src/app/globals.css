@@ -1,26 +1,231 @@
 @import "tailwindcss";
 
+/* ============================================
+   MATE DE A DOS — Design System
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Colors */
+  --beige: #F7F1EA;
+  --verde: #1F2C1D;
+  --dorado: #B9852F;
+  --blanco: #FFFFFF;
+  --gris-claro: #F5F5F3;
+  --gris-medio: #E8E5E0;
+  --gris-texto: #6B6B6B;
+  
+  /* Semantic Colors */
+  --background: var(--beige);
+  --foreground: var(--verde);
+  --accent: var(--dorado);
+  --surface: var(--blanco);
+  --surface-secondary: var(--gris-claro);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(31, 44, 29, 0.06);
+  --shadow-md: 0 4px 12px rgba(31, 44, 29, 0.08);
+  --shadow-lg: 0 8px 30px rgba(31, 44, 29, 0.12);
+  --shadow-hover: 0 12px 40px rgba(31, 44, 29, 0.15);
+  
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
 }
 
 @theme inline {
+  --color-beige: var(--beige);
+  --color-verde: var(--verde);
+  --color-dorado: var(--dorado);
+  --color-blanco: var(--blanco);
+  --color-gris-claro: var(--gris-claro);
+  --color-gris-medio: var(--gris-medio);
+  --color-gris-texto: var(--gris-texto);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-surface-secondary: var(--surface-secondary);
+  
+  --font-display: var(--font-display, 'Playfair Display', Georgia, serif);
+  --font-body: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+  
+  --shadow-card: var(--shadow-md);
+  --shadow-card-hover: var(--shadow-hover);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================
+   Base Styles
+   ============================================ */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   Image Fade-in Effect
+   ============================================ */
+
+.img-fade-in {
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+}
+
+.img-fade-in.loaded {
+  opacity: 1;
+}
+
+/* ============================================
+   Scrollbar Styling
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gris-claro);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gris-medio);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dorado);
+}
+
+/* ============================================
+   Utility Animations
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--transition-slow) ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-slow) ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight var(--transition-base) ease-out forwards;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* ============================================
+   Custom Utilities
+   ============================================ */
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.glass {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background-color: rgba(247, 241, 234, 0.85);
+}
+
+.glass-dark {
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background-color: rgba(31, 44, 29, 0.9);
+}
+
+/* Hide scrollbar but allow scrolling */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   Mobile-first safe area
+   ============================================ */
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
 }
