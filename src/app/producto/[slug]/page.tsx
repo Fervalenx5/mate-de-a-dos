@@ -17,8 +17,13 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const slug = params.slug as string;
   
+  const fetchProducts = useProductStore((s) => s.fetchProducts);
   const getProductBySlug = useProductStore((s) => s.getProductBySlug);
   const product = getProductBySlug(slug);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
