@@ -50,9 +50,9 @@ export default function Header() {
             : 'bg-transparent py-4'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between relative">
           {/* Left: Menu + Search */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 z-10">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="p-2 rounded-full hover:bg-verde/5 transition-colors lg:hidden"
@@ -69,20 +69,22 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Center: Logo */}
-          <Link href="/" className="flex-shrink-0">
-            <Image
-              src="/images/logo.png"
-              alt="Mate de a Dos"
-              width={120}
-              height={60}
-              className="h-10 w-auto md:h-12"
-              priority
-            />
-          </Link>
+          {/* Center: Logo Centrado */}
+          <div className="absolute left-1/2 -translate-x-1/2 flex justify-center items-center">
+            <Link href="/" className="flex-shrink-0">
+              <Image
+                src="/images/logo.png"
+                alt="Mate de a Dos"
+                width={120}
+                height={60}
+                className="h-10 w-auto md:h-12"
+                priority
+              />
+            </Link>
+          </div>
 
           {/* Right: Favorites + Cart */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 z-10">
             <Link
               href="/favoritos"
               className="p-2 rounded-full hover:bg-verde/5 transition-colors hidden sm:flex"

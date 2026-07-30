@@ -23,20 +23,7 @@ export default function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="mb-6"
-        >
-          <Image
-            src="/images/logo.png"
-            alt="Mate de a Dos Logo"
-            width={240}
-            height={120}
-            className="w-48 md:w-64 h-auto drop-shadow-lg"
-          />
-        </motion.div>
+
         
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
