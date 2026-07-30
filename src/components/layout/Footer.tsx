@@ -26,7 +26,13 @@ export default function Footer() {
               El mate perfecto para compartir. Artesanía, calidad y tradición en cada detalle.
             </p>
             <div className="flex items-center gap-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-2 bg-gris-claro rounded-full text-verde hover:bg-dorado hover:text-white transition-colors" title="Instagram">
+              <a 
+                href="https://www.instagram.com/matedeados_18/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="p-2 bg-gris-claro rounded-full text-verde hover:bg-dorado hover:text-white transition-colors" 
+                title="Instagram"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
               </a>
               <a href="mailto:matedeados@gmail.com" className="p-2 bg-gris-claro rounded-full text-verde hover:bg-dorado hover:text-white transition-colors" title="Email">
@@ -95,11 +101,6 @@ export default function Footer() {
           <p className="text-xs text-gris-texto">
             &copy; {currentYear} Mate de a Dos. Todos los derechos reservados.
           </p>
-          <div className="flex gap-4 text-xs text-gris-texto">
-            <Link href="/admin" className="hover:text-verde font-medium">
-              Panel Admin
-            </Link>
-          </div>
         </div>
       </div>
     </footer>
