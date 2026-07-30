@@ -2,9 +2,10 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { categories } from '@/data/products';
+import { useProductStore } from '@/stores/useProductStore';
 
 export default function CategoriesSection() {
+  const categories = useProductStore((s) => s.categories);
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
