@@ -2,6 +2,7 @@
 
 import { useProductStore } from '@/stores/useProductStore';
 import ProductImporter from '@/components/admin/ProductImporter';
+import ProductCatalogEditor from '@/components/admin/ProductCatalogEditor';
 import { useState } from 'react';
 import { Lock } from 'lucide-react';
 import Image from 'next/image';
@@ -81,15 +82,8 @@ export default function AdminPage() {
           <div className="lg:col-span-2 space-y-8">
             <ProductImporter />
             
-            {/* Future expansion: Product List Editor could go here */}
-            <div className="bg-blanco rounded-2xl shadow-sm border border-gris-medio p-6 md:p-8">
-              <h2 className="text-xl font-display font-medium text-verde mb-4">
-                Próximamente: Gestor de Catálogo
-              </h2>
-              <p className="text-gris-texto">
-                Acá vas a poder ver la lista de todos tus productos, editar sus precios, cambiar categorías o eliminarlos. Por ahora podés usar el importador de arriba para agregar productos nuevos.
-              </p>
-            </div>
+            {/* Gestor Interactivo de Catálogo y Precios */}
+            <ProductCatalogEditor />
           </div>
 
           {/* Sidebar Area */}
