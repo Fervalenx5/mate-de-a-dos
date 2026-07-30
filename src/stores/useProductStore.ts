@@ -1,6 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { Product, Category } from '@/types/types';
 import { initialProducts, categories as defaultCategories } from '@/data/products';
 import { supabase } from '@/lib/supabase';
@@ -31,109 +32,123 @@ interface ProductStore {
 
 const ADMIN_PASSWORD = 'matedeados2024';
 
-export const useProductStore = create<ProductStore>((set, get) => ({
-  products: initialProducts,
-  categories: defaultCategories,
-  isAdminAuthenticated: false,
-  loading: false,
+export const useProductStore = create<ProductStore>()(
+  persist(
+    (set, get) => ({
+      products: initialProducts,
+      categories: defaultCategories,
+      isAdminAuthenticated: false,
+      loading: false,
 
-  fetchProducts: async () => {
-    try {
-      set({ loading: true });
-      const { data, error } = await supabase.from('products').select('*');
-      if (!error && data && data.length > 0) {
-        set({ products: data });
-      }
-    } catch (e) {
-      console.log('Using local products fallback:', e);
-    } finally {
-      set({ loading: false });
+      fetchProducts: async () => {
+        try {
+          set({ loading: true });
+          const { data, error } = await supabase.from('products').select('*');
+          if (!error && data && data.length > 0) {
+            set({ products: data });
+          }
+        } catch (e) {
+          console.log('Using local products fallback:', e);
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      addProduct: async (product) => {
+        const updated = [...get().products, product];
+        set({ products: updated });
+        try {
+          await supabase.from('products').upsert([product]);
+        } catch (e) {
+          console.log('Error syncing to Supabase:', e);
+        }
+      },
+
+      updateProduct: async (id, data) => {
+        const updated = get().products.map((p) => (p.id === id ? { ...p, ...data } : p));
+        set({ products: updated });
+        try {
+          const target = updated.find((p) => p.id === id);
+          if (target) {
+            await supabase.from('products').upsert([target]);
+          }
+        } catch (e) {
+          console.log('Error updating in Supabase:', e);
+        }
+      },
+
+      deleteProduct: async (id) => {
+        const updated = get().products.filter((p) => p.id !== id);
+        set({ products: updated });
+        try {
+          await supabase.from('products').delete().eq('id', id);
+        } catch (e) {
+          console.log('Error deleting in Supabase:', e);
+        }
+      },
+
+      toggleProductActive: async (id) => {
+        const target = get().products.find((p) => p.id === id);
+        if (!target) return;
+        const newActive = !target.active;
+        await get().updateProduct(id, { active: newActive });
+      },
+
+      toggleProductFeatured: async (id) => {
+        const target = get().products.find((p) => p.id === id);
+        if (!target) return;
+        const newFeatured = !target.featured;
+        await get().updateProduct(id, { featured: newFeatured });
+      },
+
+      toggleProductNew: async (id) => {
+        const target = get().products.find((p) => p.id === id);
+        if (!target) return;
+        const newIsNew = !target.isNew;
+        await get().updateProduct(id, { isNew: newIsNew });
+      },
+
+      addCategory: (category) => {
+        set({ categories: [...get().categories, category] });
+      },
+
+      deleteCategory: (id) => {
+        set({ categories: get().categories.filter((c) => c.id !== id) });
+      },
+
+      authenticateAdmin: (password) => {
+        const isValid = password === ADMIN_PASSWORD;
+        if (isValid) {
+          set({ isAdminAuthenticated: true });
+        }
+        return isValid;
+      },
+
+      logoutAdmin: () => set({ isAdminAuthenticated: false }),
+
+      getActiveProducts: () => get().products.filter((p) => p.active),
+
+      getProductsByCategory: (categorySlug) =>
+        get().products.filter((p) => p.active && p.category === categorySlug),
+
+      getProductBySlug: (slug) =>
+        get().products.find((p) => p.slug === slug),
+
+      getProductById: (id) =>
+        get().products.find((p) => p.id === id),
+
+      getFeaturedProducts: () =>
+        get().products.filter((p) => p.active && p.featured),
+
+      getNewProducts: () =>
+        get().products.filter((p) => p.active && p.isNew),
+    }),
+    {
+      name: 'mate-products-v3',
+      partialize: (state) => ({
+        products: state.products,
+        categories: state.categories,
+      }),
     }
-  },
-
-  addProduct: async (product) => {
-    const updated = [...get().products, product];
-    set({ products: updated });
-    try {
-      await supabase.from('products').insert([product]);
-    } catch (e) {
-      console.log('Error syncing to Supabase:', e);
-    }
-  },
-
-  updateProduct: async (id, data) => {
-    const updated = get().products.map((p) => (p.id === id ? { ...p, ...data } : p));
-    set({ products: updated });
-    try {
-      await supabase.from('products').update(data).eq('id', id);
-    } catch (e) {
-      console.log('Error updating in Supabase:', e);
-    }
-  },
-
-  deleteProduct: async (id) => {
-    const updated = get().products.filter((p) => p.id !== id);
-    set({ products: updated });
-    try {
-      await supabase.from('products').delete().eq('id', id);
-    } catch (e) {
-      console.log('Error deleting in Supabase:', e);
-    }
-  },
-
-  toggleProductActive: async (id) => {
-    const target = get().products.find((p) => p.id === id);
-    if (!target) return;
-    const newActive = !target.active;
-    await get().updateProduct(id, { active: newActive });
-  },
-
-  toggleProductFeatured: async (id) => {
-    const target = get().products.find((p) => p.id === id);
-    if (!target) return;
-    const newFeatured = !target.featured;
-    await get().updateProduct(id, { featured: newFeatured });
-  },
-
-  toggleProductNew: async (id) => {
-    const target = get().products.find((p) => p.id === id);
-    if (!target) return;
-    const newIsNew = !target.isNew;
-    await get().updateProduct(id, { isNew: newIsNew });
-  },
-
-  addCategory: (category) => {
-    set({ categories: [...get().categories, category] });
-  },
-
-  deleteCategory: (id) => {
-    set({ categories: get().categories.filter((c) => c.id !== id) });
-  },
-
-  authenticateAdmin: (password) => {
-    const isValid = password === ADMIN_PASSWORD;
-    if (isValid) {
-      set({ isAdminAuthenticated: true });
-    }
-    return isValid;
-  },
-
-  logoutAdmin: () => set({ isAdminAuthenticated: false }),
-
-  getActiveProducts: () => get().products.filter((p) => p.active),
-
-  getProductsByCategory: (categorySlug) =>
-    get().products.filter((p) => p.active && p.category === categorySlug),
-
-  getProductBySlug: (slug) =>
-    get().products.find((p) => p.slug === slug),
-
-  getProductById: (id) =>
-    get().products.find((p) => p.id === id),
-
-  getFeaturedProducts: () =>
-    get().products.filter((p) => p.active && p.featured),
-
-  getNewProducts: () =>
-    get().products.filter((p) => p.active && p.isNew),
-}));
+  )
+);
