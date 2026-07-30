@@ -45,10 +45,21 @@ export const useProductStore = create<ProductStore>()(
           set({ loading: true });
           const { data, error } = await supabase.from('products').select('*');
           if (!error && data && data.length > 0) {
-            set({ products: data });
+            // Combinar con initialProducts para asegurar que nunca se pierda ningún producto base
+            const dbMap = new Map(data.map((item: Product) => [item.id, item]));
+            const merged = initialProducts.map((p) => dbMap.get(p.id) || p);
+            
+            // Agregar cualquier producto nuevo creado en DB
+            data.forEach((item: Product) => {
+              if (!merged.some((p) => p.id === item.id)) {
+                merged.push(item);
+              }
+            });
+            
+            set({ products: merged });
           }
         } catch (e) {
-          console.log('Using local products fallback:', e);
+          console.log('Using local fallback:', e);
         } finally {
           set({ loading: false });
         }
@@ -144,7 +155,7 @@ export const useProductStore = create<ProductStore>()(
         get().products.filter((p) => p.active && p.isNew),
     }),
     {
-      name: 'mate-products-v3',
+      name: 'mate-products-v4',
       partialize: (state) => ({
         products: state.products,
         categories: state.categories,
