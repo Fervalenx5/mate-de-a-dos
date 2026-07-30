@@ -45,11 +45,9 @@ export const useProductStore = create<ProductStore>()(
           set({ loading: true });
           const { data, error } = await supabase.from('products').select('*');
           if (!error && data && data.length > 0) {
-            // Combinar con initialProducts para asegurar que nunca se pierda ningún producto base
             const dbMap = new Map(data.map((item: Product) => [item.id, item]));
-            const merged = initialProducts.map((p) => dbMap.get(p.id) || p);
+            const merged = get().products.map((p) => dbMap.get(p.id) || p);
             
-            // Agregar cualquier producto nuevo creado en DB
             data.forEach((item: Product) => {
               if (!merged.some((p) => p.id === item.id)) {
                 merged.push(item);
@@ -81,7 +79,10 @@ export const useProductStore = create<ProductStore>()(
         try {
           const target = updated.find((p) => p.id === id);
           if (target) {
-            await supabase.from('products').upsert([target]);
+            const { error } = await supabase.from('products').upsert([target]);
+            if (error) {
+              console.error('Supabase upsert error:', error.message);
+            }
           }
         } catch (e) {
           console.log('Error updating in Supabase:', e);
@@ -155,7 +156,7 @@ export const useProductStore = create<ProductStore>()(
         get().products.filter((p) => p.active && p.isNew),
     }),
     {
-      name: 'mate-products-v4',
+      name: 'mate-products-v5',
       partialize: (state) => ({
         products: state.products,
         categories: state.categories,
