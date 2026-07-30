@@ -22,7 +22,7 @@ import { useCartStore } from '@/stores/useCartStore';
 import { formatPrice, generateWhatsAppMessage, getWhatsAppURL } from '@/lib/utils';
 import { CartItem as CartItemType } from '@/types/types';
 
-const WHATSAPP_NUMBER = '5491112345678'; // TODO: Reemplazar con número real
+const WHATSAPP_NUMBER = '5491150467924';
 
 export default function CarritoPage() {
   const { items, removeItem, updateQuantity, clearCart, getTotalPrice } = useCartStore();
