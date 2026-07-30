@@ -3,17 +3,20 @@
 import { create } from 'zustand';
 import { Product, Category } from '@/types/types';
 import { initialProducts, categories as defaultCategories } from '@/data/products';
+import { supabase } from '@/lib/supabase';
 
 interface ProductStore {
   products: Product[];
   categories: Category[];
   isAdminAuthenticated: boolean;
-  addProduct: (product: Product) => void;
-  updateProduct: (id: string, data: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
-  toggleProductActive: (id: string) => void;
-  toggleProductFeatured: (id: string) => void;
-  toggleProductNew: (id: string) => void;
+  loading: boolean;
+  fetchProducts: () => Promise<void>;
+  addProduct: (product: Product) => Promise<void>;
+  updateProduct: (id: string, data: Partial<Product>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
+  toggleProductActive: (id: string) => Promise<void>;
+  toggleProductFeatured: (id: string) => Promise<void>;
+  toggleProductNew: (id: string) => Promise<void>;
   addCategory: (category: Category) => void;
   deleteCategory: (id: string) => void;
   authenticateAdmin: (password: string) => boolean;
@@ -24,7 +27,6 @@ interface ProductStore {
   getProductById: (id: string) => Product | undefined;
   getFeaturedProducts: () => Product[];
   getNewProducts: () => Product[];
-  syncFromAPI: () => Promise<void>;
 }
 
 const ADMIN_PASSWORD = 'matedeados2024';
@@ -33,45 +35,71 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   products: initialProducts,
   categories: defaultCategories,
   isAdminAuthenticated: false,
+  loading: false,
 
-  addProduct: (product) => {
-    set({ products: [...get().products, product] });
+  fetchProducts: async () => {
+    try {
+      set({ loading: true });
+      const { data, error } = await supabase.from('products').select('*');
+      if (!error && data && data.length > 0) {
+        set({ products: data });
+      }
+    } catch (e) {
+      console.log('Using local products fallback:', e);
+    } finally {
+      set({ loading: false });
+    }
   },
 
-  updateProduct: (id, data) => {
-    set({
-      products: get().products.map((p) =>
-        p.id === id ? { ...p, ...data } : p
-      ),
-    });
+  addProduct: async (product) => {
+    const updated = [...get().products, product];
+    set({ products: updated });
+    try {
+      await supabase.from('products').insert([product]);
+    } catch (e) {
+      console.log('Error syncing to Supabase:', e);
+    }
   },
 
-  deleteProduct: (id) => {
-    set({ products: get().products.filter((p) => p.id !== id) });
+  updateProduct: async (id, data) => {
+    const updated = get().products.map((p) => (p.id === id ? { ...p, ...data } : p));
+    set({ products: updated });
+    try {
+      await supabase.from('products').update(data).eq('id', id);
+    } catch (e) {
+      console.log('Error updating in Supabase:', e);
+    }
   },
 
-  toggleProductActive: (id) => {
-    set({
-      products: get().products.map((p) =>
-        p.id === id ? { ...p, active: !p.active } : p
-      ),
-    });
+  deleteProduct: async (id) => {
+    const updated = get().products.filter((p) => p.id !== id);
+    set({ products: updated });
+    try {
+      await supabase.from('products').delete().eq('id', id);
+    } catch (e) {
+      console.log('Error deleting in Supabase:', e);
+    }
   },
 
-  toggleProductFeatured: (id) => {
-    set({
-      products: get().products.map((p) =>
-        p.id === id ? { ...p, featured: !p.featured } : p
-      ),
-    });
+  toggleProductActive: async (id) => {
+    const target = get().products.find((p) => p.id === id);
+    if (!target) return;
+    const newActive = !target.active;
+    await get().updateProduct(id, { active: newActive });
   },
 
-  toggleProductNew: (id) => {
-    set({
-      products: get().products.map((p) =>
-        p.id === id ? { ...p, isNew: !p.isNew } : p
-      ),
-    });
+  toggleProductFeatured: async (id) => {
+    const target = get().products.find((p) => p.id === id);
+    if (!target) return;
+    const newFeatured = !target.featured;
+    await get().updateProduct(id, { featured: newFeatured });
+  },
+
+  toggleProductNew: async (id) => {
+    const target = get().products.find((p) => p.id === id);
+    if (!target) return;
+    const newIsNew = !target.isNew;
+    await get().updateProduct(id, { isNew: newIsNew });
   },
 
   addCategory: (category) => {
@@ -108,8 +136,4 @@ export const useProductStore = create<ProductStore>((set, get) => ({
 
   getNewProducts: () =>
     get().products.filter((p) => p.active && p.isNew),
-
-  syncFromAPI: async () => {
-    console.log('syncFromAPI: Ready for future implementation');
-  },
 }));

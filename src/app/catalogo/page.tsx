@@ -19,6 +19,12 @@ function CatalogContent() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryParam || null);
   const [sortBy, setSortBy] = useState<'featured' | 'price_asc' | 'price_desc' | 'newest'>('featured');
 
+  const fetchProducts = useProductStore((s) => s.fetchProducts);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
   // Update selected category if URL changes
   useEffect(() => {
     if (categoryParam) {
