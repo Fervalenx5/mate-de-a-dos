@@ -5,12 +5,12 @@ import { Product, Category } from '@/types/types';
 // ============================================
 
 export const categories: Category[] = [
-  { id: 'mates', name: 'Todos los Mates', slug: 'mates', icon: '🧉', order: 1 },
-  { id: 'imperiales', name: 'Imperiales', slug: 'imperiales', icon: '👑', order: 2 },
-  { id: 'torpedos', name: 'Torpedos', slug: 'torpedos', icon: '🚀', order: 3 },
-  { id: 'camioneros', name: 'Camioneros', slug: 'camioneros', icon: '🪵', order: 4 },
-  { id: 'variados', name: 'Mates Especiales', slug: 'variados', icon: '✨', order: 5 },
-  { id: 'termos', name: 'Termos', slug: 'termos', icon: '🫗', order: 6 },
+  { id: 'mates', name: 'Todos los Mates', slug: 'mates', icon: 'Mates', order: 1 },
+  { id: 'imperiales', name: 'Imperiales', slug: 'imperiales', icon: 'Crown', order: 2 },
+  { id: 'torpedos', name: 'Torpedos', slug: 'torpedos', icon: 'Rocket', order: 3 },
+  { id: 'camioneros', name: 'Camioneros', slug: 'camioneros', icon: 'Sparkles', order: 4 },
+  { id: 'variados', name: 'Mates Especiales', slug: 'variados', icon: 'Star', order: 5 },
+  { id: 'termos', name: 'Termos', slug: 'termos', icon: 'Flame', order: 6 },
 ];
 
 // ============================================

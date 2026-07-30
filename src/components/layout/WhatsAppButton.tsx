@@ -5,8 +5,8 @@ import { MessageCircle } from 'lucide-react';
 import { getWhatsAppURL } from '@/lib/utils';
 
 export default function WhatsAppButton() {
-  const WHATSAPP_NUMBER = '5491112345678'; // Placeholder until provided
-  const message = 'Hola! Me gustaría hacer una consulta sobre los productos.';
+  const WHATSAPP_NUMBER = '5491150467924';
+  const message = 'Hola! Me gustaría hacer una consulta sobre los productos de Mate de a Dos.';
   
   const href = getWhatsAppURL(WHATSAPP_NUMBER, message);
 
