@@ -75,9 +75,9 @@ export default function Header() {
               <Image
                 src="/images/logo.png"
                 alt="Mate de a Dos"
-                width={120}
-                height={60}
-                className="h-10 w-auto md:h-12"
+                width={200}
+                height={100}
+                className="h-14 w-auto md:h-16 lg:h-20 transition-all duration-300 drop-shadow-sm"
                 priority
               />
             </Link>
