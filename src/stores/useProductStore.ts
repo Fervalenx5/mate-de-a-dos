@@ -120,7 +120,7 @@ export const useProductStore = create<ProductStore>()(
       },
     }),
     {
-      name: 'mate-products',
+      name: 'mate-products-v2',
       partialize: (state) => ({
         products: state.products,
         categories: state.categories,
