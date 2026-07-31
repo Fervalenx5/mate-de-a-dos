@@ -19,7 +19,9 @@ export const metadata: Metadata = {
   keywords: ["mate", "argentina", "artesanal", "bombilla", "termo", "yerba"],
   manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.png?v=2",
+    shortcut: "/favicon.png?v=2",
+    apple: "/favicon.png?v=2",
   },
 };
 
