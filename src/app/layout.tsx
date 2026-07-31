@@ -46,6 +46,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+        <link rel="icon" type="image/png" href="/mate-icon.png?v=999" sizes="any" />
+        <link rel="shortcut icon" href="/mate-icon.png?v=999" />
+        <link rel="apple-touch-icon" href="/mate-icon.png?v=999" />
+      </head>
       <body className={`${inter.variable} ${playfair.variable} antialiased font-body selection:bg-dorado/30`}>
         <Header />
         <CartDrawer />
