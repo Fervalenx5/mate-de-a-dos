@@ -1,7 +1,6 @@
 'use client';
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import { Product, Category } from '@/types/types';
 import { initialProducts, categories as defaultCategories } from '@/data/products';
 import { supabase } from '@/lib/supabase';
@@ -32,9 +31,7 @@ interface ProductStore {
 
 const ADMIN_PASSWORD = 'matedeados2024';
 
-export const useProductStore = create<ProductStore>()(
-  persist(
-    (set, get) => ({
+export const useProductStore = create<ProductStore>()((set, get) => ({
       products: initialProducts,
       categories: defaultCategories,
       isAdminAuthenticated: false,
@@ -155,12 +152,5 @@ export const useProductStore = create<ProductStore>()(
 
       getNewProducts: () =>
         get().products.filter((p) => p.active && p.isNew),
-    }),
-    {
-      name: 'mate-products-v7',
-      partialize: (state) => ({
-        products: state.products,
-      }),
-    }
-  )
+    })
 );
