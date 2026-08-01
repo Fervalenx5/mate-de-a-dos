@@ -19,9 +19,12 @@ export const metadata: Metadata = {
   keywords: ["mate", "argentina", "artesanal", "bombilla", "termo", "yerba"],
   manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.png?v=3",
-    shortcut: "/favicon.png?v=3",
-    apple: "/favicon.png?v=3",
+    icon: [
+      { url: "/favicon.png?v=2026", type: "image/png" },
+      { url: "/favicon.ico?v=2026" }
+    ],
+    shortcut: "/favicon.png?v=2026",
+    apple: "/favicon.png?v=2026",
   },
 };
 
@@ -47,9 +50,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <link rel="icon" type="image/png" href="/mate-icon.png?v=999" sizes="any" />
-        <link rel="shortcut icon" href="/mate-icon.png?v=999" />
-        <link rel="apple-touch-icon" href="/mate-icon.png?v=999" />
+        <link rel="icon" type="image/png" href="/favicon.png?v=2026" sizes="any" />
+        <link rel="shortcut icon" href="/favicon.png?v=2026" />
+        <link rel="apple-touch-icon" href="/favicon.png?v=2026" />
       </head>
       <body className={`${inter.variable} ${playfair.variable} antialiased font-body selection:bg-dorado/30`}>
         <Header />
