@@ -51,19 +51,12 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Image */}
       <Link href={`/producto/${product.slug}`} className="block relative aspect-square mb-4 rounded-xl overflow-hidden bg-gris-claro">
         <Image
-          src={product.images[0]}
+          src={product.images && product.images[0] ? product.images[0] : '/images/products/termo-negro.png'}
           alt={product.name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className={`object-cover transition-transform duration-700 group-hover:scale-105 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          onLoad={() => setImageLoaded(true)}
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        {/* Placeholder while loading */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-gris-claro animate-pulse" />
-        )}
       </Link>
 
       {/* Content */}

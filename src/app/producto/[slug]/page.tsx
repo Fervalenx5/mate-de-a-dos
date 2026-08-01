@@ -79,7 +79,7 @@ export default function ProductDetailPage() {
           <div className="w-full lg:w-1/2 flex flex-col gap-4">
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-beige/30 border border-gris-medio">
               <Image
-                src={product.images[activeImage]}
+                src={product.images && product.images[activeImage] ? product.images[activeImage] : '/images/products/termo-negro.png'}
                 alt={product.name}
                 fill
                 className="object-cover"

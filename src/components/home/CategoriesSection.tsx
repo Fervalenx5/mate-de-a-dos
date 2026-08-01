@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useProductStore } from '@/stores/useProductStore';
-import { Coffee, Crown, Rocket, Sparkles, Star, Flame } from 'lucide-react';
+import { categories } from '@/data/products';
+import { Coffee, Crown, Rocket, Sparkles, Star, Flame, ShoppingBag, Package, Sparkle } from 'lucide-react';
 
 const categoryIcons: Record<string, React.ReactNode> = {
   mates: <Coffee className="w-8 h-8 text-verde group-hover:text-white transition-colors" />,
@@ -12,10 +12,12 @@ const categoryIcons: Record<string, React.ReactNode> = {
   camioneros: <Sparkles className="w-8 h-8 text-verde group-hover:text-white transition-colors" />,
   variados: <Star className="w-8 h-8 text-verde group-hover:text-white transition-colors" />,
   termos: <Flame className="w-8 h-8 text-verde group-hover:text-white transition-colors" />,
+  materas: <ShoppingBag className="w-8 h-8 text-verde group-hover:text-white transition-colors" />,
+  yerberos: <Package className="w-8 h-8 text-verde group-hover:text-white transition-colors" />,
+  bombillas: <Sparkle className="w-8 h-8 text-verde group-hover:text-white transition-colors" />,
 };
 
 export default function CategoriesSection() {
-  const categories = useProductStore((s) => s.categories);
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -46,7 +48,7 @@ export default function CategoriesSection() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-3 md:gap-4"
         >
           {categories.map((category) => (
             <motion.div key={category.id} variants={itemVariants}>

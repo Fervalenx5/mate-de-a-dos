@@ -1,19 +1,31 @@
 'use client';
 
 import { useProductStore } from '@/stores/useProductStore';
+import { categories } from '@/data/products';
 import ProductCard from '@/components/product/ProductCard';
 import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Filter, SlidersHorizontal, X } from 'lucide-react';
+import { Filter, SlidersHorizontal, X, Coffee, Crown, Rocket, Sparkles, Star, Flame, ShoppingBag, Package, Sparkle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+
+const categoryIcons: Record<string, React.ReactNode> = {
+  mates: <Coffee className="w-4 h-4 text-dorado" />,
+  imperiales: <Crown className="w-4 h-4 text-dorado" />,
+  torpedos: <Rocket className="w-4 h-4 text-dorado" />,
+  camioneros: <Sparkles className="w-4 h-4 text-dorado" />,
+  variados: <Star className="w-4 h-4 text-dorado" />,
+  termos: <Flame className="w-4 h-4 text-dorado" />,
+  materas: <ShoppingBag className="w-4 h-4 text-dorado" />,
+  yerberos: <Package className="w-4 h-4 text-dorado" />,
+  bombillas: <Sparkle className="w-4 h-4 text-dorado" />,
+};
 
 function CatalogContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('categoria');
 
   const allProducts = useProductStore((s) => s.products);
-  const categories = useProductStore((s) => s.categories);
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryParam || null);
@@ -142,7 +154,7 @@ function CatalogContent() {
                             onClick={() => { setSelectedCategory(category.slug); setIsFilterOpen(false); }}
                             className={`text-sm w-full text-left flex items-center gap-2 transition-colors ${selectedCategory === category.slug ? 'text-dorado font-medium' : 'text-gris-texto hover:text-verde'}`}
                           >
-                            <span>{category.icon}</span> {category.name}
+                            <span>{categoryIcons[category.slug] || <Coffee className="w-4 h-4 text-dorado" />}</span> {category.name}
                           </button>
                         </li>
                       ))}

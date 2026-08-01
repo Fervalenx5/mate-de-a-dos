@@ -45,19 +45,20 @@ export const useProductStore = create<ProductStore>()(
           set({ loading: true });
           const { data, error } = await supabase.from('products').select('*');
           if (!error && data && data.length > 0) {
-            const dbMap = new Map(data.map((item: Product) => [item.id, item]));
-            const merged = get().products.map((p) => dbMap.get(p.id) || p);
-            
-            data.forEach((item: Product) => {
-              if (!merged.some((p) => p.id === item.id)) {
-                merged.push(item);
-              }
-            });
-            
-            set({ products: merged });
+            // Map Supabase column names to frontend camelCase if needed, or use directly
+            const formatted = data.map((item: any) => ({
+              ...item,
+              isNew: item.isNew ?? item.is_new ?? false,
+              inStock: item.inStock ?? item.in_stock ?? true,
+              createdAt: item.createdAt ?? item.created_at ?? new Date().toISOString(),
+            }));
+            set({ products: formatted, categories: defaultCategories });
+          } else {
+            set({ products: initialProducts, categories: defaultCategories });
           }
         } catch (e) {
           console.log('Using local fallback:', e);
+          set({ products: initialProducts, categories: defaultCategories });
         } finally {
           set({ loading: false });
         }
@@ -156,10 +157,9 @@ export const useProductStore = create<ProductStore>()(
         get().products.filter((p) => p.active && p.isNew),
     }),
     {
-      name: 'mate-products-v5',
+      name: 'mate-products-v7',
       partialize: (state) => ({
         products: state.products,
-        categories: state.categories,
       }),
     }
   )
