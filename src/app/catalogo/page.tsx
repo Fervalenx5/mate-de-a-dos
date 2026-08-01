@@ -48,7 +48,12 @@ function CatalogContent() {
     let result = allProducts.filter(p => p.active);
 
     if (selectedCategory) {
-      result = result.filter(p => p.category === selectedCategory);
+      if (selectedCategory === 'mates') {
+        const mateCategories = ['mates', 'imperiales', 'torpedos', 'camioneros', 'variados'];
+        result = result.filter(p => mateCategories.includes(p.category));
+      } else {
+        result = result.filter(p => p.category === selectedCategory);
+      }
     }
 
     switch (sortBy) {
