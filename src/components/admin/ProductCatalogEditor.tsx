@@ -342,14 +342,33 @@ export default function ProductCatalogEditor() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gris-texto mb-1">Ruta o URL de la Imagen</label>
-                <input
-                  type="text"
-                  value={newImageUrl}
-                  onChange={(e) => setNewImageUrl(e.target.value)}
-                  placeholder="/images/products/..."
-                  className="w-full bg-beige border border-gris-medio rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-dorado"
-                />
+                <label className="block text-xs font-medium text-gris-texto mb-1">Imagen del producto</label>
+                <div className="flex flex-col gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          if (reader.result) {
+                            setNewImageUrl(reader.result as string);
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="w-full text-xs text-gris-texto file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-verde file:text-white hover:file:bg-dorado file:cursor-pointer"
+                  />
+                  <input
+                    type="text"
+                    value={newImageUrl.startsWith('data:') ? 'Imagen cargada localmente ✔️' : newImageUrl}
+                    onChange={(e) => setNewImageUrl(e.target.value)}
+                    placeholder="o escribí una URL/ruta de la imagen..."
+                    className="w-full bg-beige border border-gris-medio rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-dorado text-gris-texto"
+                  />
+                </div>
               </div>
 
               <div className="flex gap-3 pt-4">
