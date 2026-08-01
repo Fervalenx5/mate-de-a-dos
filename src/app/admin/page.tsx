@@ -3,7 +3,7 @@
 import { useProductStore } from '@/stores/useProductStore';
 import ProductImporter from '@/components/admin/ProductImporter';
 import ProductCatalogEditor from '@/components/admin/ProductCatalogEditor';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Lock } from 'lucide-react';
 import Image from 'next/image';
 
@@ -13,9 +13,14 @@ export default function AdminPage() {
   const logoutAdmin = useProductStore((s) => s.logoutAdmin);
   const totalProducts = useProductStore((s) => s.products.length);
   const totalCategories = useProductStore((s) => s.categories.length);
+  const fetchProducts = useProductStore((s) => s.fetchProducts);
   
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
