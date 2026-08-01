@@ -65,7 +65,12 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
         const updated = [...get().products, product];
         set({ products: updated });
         try {
-          await supabase.from('products').upsert([product]);
+          const { error } = await supabase.from('products').upsert([product]);
+          if (error) {
+            console.error('Error al guardar producto en Supabase:', error.message);
+          } else {
+            await get().fetchProducts();
+          }
         } catch (e) {
           console.log('Error syncing to Supabase:', e);
         }
@@ -80,6 +85,8 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
             const { error } = await supabase.from('products').upsert([target]);
             if (error) {
               console.error('Supabase upsert error:', error.message);
+            } else {
+              await get().fetchProducts();
             }
           }
         } catch (e) {
