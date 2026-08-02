@@ -42,7 +42,7 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
           set({ loading: true });
           const { data, error } = await supabase
             .from('products')
-            .select('id, name, slug, description, price, category, material, colors, capacity, images, featured, isNew, is_new, active, in_stock, inStock, created_at, createdAt');
+            .select('id, name, slug, description, price, category, material, colors, capacity, images, featured, isNew, active, inStock, createdAt');
           
           if (error) {
             console.error('Error cargando de Supabase:', error.message);
@@ -72,9 +72,9 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
                 return ['/images/products/termo-negro.png'];
               })(),
               featured: Boolean(item.featured),
-              isNew: Boolean(item.isNew || item.is_new),
+              isNew: Boolean(item.isNew),
               active: item.active !== false && item.active !== 'false' && item.active !== 0,
-              inStock: item.inStock !== false && item.in_stock !== false && item.inStock !== 'false' && item.inStock !== 0,
+              inStock: item.inStock !== false && item.inStock !== 'false' && item.inStock !== 0,
               createdAt: item.createdAt ?? item.created_at ?? new Date().toISOString(),
             }));
 
@@ -94,7 +94,6 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
         const updated = [...get().products, product];
         set({ products: updated });
         try {
-          // Si el ID es un string manual o temporal de JS, dejamos que Supabase lo inserte o ignore si rechaza el id
           const payload: Record<string, any> = {
             name: product.name,
             slug: product.slug,
@@ -105,14 +104,13 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
             images: product.images,
             colors: product.colors,
             capacity: product.capacity ?? null,
-            is_new: product.isNew ?? false,
+            isNew: product.isNew ?? false,
             active: product.active ?? true,
             featured: product.featured ?? false,
-            in_stock: product.inStock ?? true,
-            created_at: product.createdAt ?? new Date().toISOString(),
+            inStock: product.inStock ?? true,
+            createdAt: product.createdAt ?? new Date().toISOString(),
           };
           
-          // Solo enviar ID si no empieza con manual-
           if (!product.id.startsWith('manual-')) {
             payload.id = product.id;
           }
@@ -120,7 +118,6 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
           const { error } = await supabase.from('products').insert([payload]);
           if (error) {
             console.error('Error al insertar producto en Supabase:', error.message);
-            // Si falla el insert con error de ID existente, probar upsert
             await supabase.from('products').upsert([payload]);
           }
         } catch (e) {
