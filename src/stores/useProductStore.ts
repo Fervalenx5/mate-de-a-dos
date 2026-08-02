@@ -95,8 +95,6 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
           const { error } = await supabase.from('products').upsert([payload]);
           if (error) {
             console.error('Error al guardar producto en Supabase:', error.message);
-          } else {
-            await get().fetchProducts();
           }
         } catch (e) {
           console.log('Error syncing to Supabase:', e);
