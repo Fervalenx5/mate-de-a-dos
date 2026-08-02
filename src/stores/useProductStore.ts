@@ -42,20 +42,20 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
           set({ loading: true });
           const { data, error } = await supabase.from('products').select('*');
           if (!error && data && data.length > 0) {
-            const formatted = data.map((item: any) => ({
-              id: item.id,
+            const formatted: Product[] = data.map((item: any) => ({
+              id: String(item.id),
               name: item.name,
               slug: item.slug,
               description: item.description || '',
               price: Number(item.price),
-              originalPrice: item.original_price ?? item.originalPrice ?? undefined,
-              category: item.category,
-              images: item.images || [],
+              category: item.category || 'mates',
+              material: item.material || 'Aluminio / Madera',
               colors: item.colors || [],
-              badge: item.badge || undefined,
+              capacity: item.capacity || undefined,
+              images: item.images || [],
+              featured: item.featured ?? false,
               isNew: item.is_new ?? item.isNew ?? false,
               active: item.active ?? true,
-              featured: item.featured ?? false,
               inStock: item.in_stock ?? item.inStock ?? true,
               createdAt: item.created_at ?? item.createdAt ?? new Date().toISOString(),
             }));
@@ -81,11 +81,11 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
             slug: product.slug,
             description: product.description,
             price: product.price,
-            original_price: product.originalPrice ?? null,
             category: product.category,
+            material: product.material,
             images: product.images,
             colors: product.colors,
-            badge: product.badge ?? null,
+            capacity: product.capacity ?? null,
             is_new: product.isNew ?? false,
             active: product.active ?? true,
             featured: product.featured ?? false,
@@ -109,25 +109,23 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
         try {
           const target = updated.find((p) => p.id === id);
           if (target) {
-            const payload = {
-              id: target.id,
-              name: target.name,
-              slug: target.slug,
-              description: target.description,
-              price: target.price,
-              original_price: target.originalPrice ?? null,
-              category: target.category,
-              images: target.images,
-              colors: target.colors,
-              badge: target.badge ?? null,
-              is_new: target.isNew ?? false,
-              active: target.active ?? true,
-              featured: target.featured ?? false,
-              in_stock: target.inStock ?? true,
-            };
-            const { error } = await supabase.from('products').upsert([payload]);
+            const dbData: Record<string, any> = {};
+            if (data.name !== undefined) dbData.name = data.name;
+            if (data.price !== undefined) dbData.price = data.price;
+            if (data.description !== undefined) dbData.description = data.description;
+            if (data.material !== undefined) dbData.material = data.material;
+            if (data.capacity !== undefined) dbData.capacity = data.capacity;
+            if (data.active !== undefined) dbData.active = data.active;
+            if (data.featured !== undefined) dbData.featured = data.featured;
+            if (data.isNew !== undefined) dbData.is_new = data.isNew;
+            if (data.inStock !== undefined) dbData.in_stock = data.inStock;
+            if (data.category !== undefined) dbData.category = data.category;
+            if (data.images !== undefined) dbData.images = data.images;
+            if (data.colors !== undefined) dbData.colors = data.colors;
+
+            const { error } = await supabase.from('products').update(dbData).eq('id', id);
             if (error) {
-              console.error('Supabase upsert error:', error.message);
+              console.error('Supabase update error:', error.message);
             } else {
               await get().fetchProducts();
             }
