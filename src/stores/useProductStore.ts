@@ -65,7 +65,24 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
         const updated = [...get().products, product];
         set({ products: updated });
         try {
-          const { error } = await supabase.from('products').upsert([product]);
+          const payload = {
+            id: product.id,
+            name: product.name,
+            slug: product.slug,
+            description: product.description,
+            price: product.price,
+            original_price: product.originalPrice ?? null,
+            category: product.category,
+            images: product.images,
+            colors: product.colors,
+            badge: product.badge ?? null,
+            is_new: product.isNew ?? false,
+            active: product.active ?? true,
+            featured: product.featured ?? false,
+            in_stock: product.inStock ?? true,
+            created_at: product.createdAt ?? new Date().toISOString(),
+          };
+          const { error } = await supabase.from('products').upsert([payload]);
           if (error) {
             console.error('Error al guardar producto en Supabase:', error.message);
           } else {
@@ -82,7 +99,23 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
         try {
           const target = updated.find((p) => p.id === id);
           if (target) {
-            const { error } = await supabase.from('products').upsert([target]);
+            const payload = {
+              id: target.id,
+              name: target.name,
+              slug: target.slug,
+              description: target.description,
+              price: target.price,
+              original_price: target.originalPrice ?? null,
+              category: target.category,
+              images: target.images,
+              colors: target.colors,
+              badge: target.badge ?? null,
+              is_new: target.isNew ?? false,
+              active: target.active ?? true,
+              featured: target.featured ?? false,
+              in_stock: target.inStock ?? true,
+            };
+            const { error } = await supabase.from('products').upsert([payload]);
             if (error) {
               console.error('Supabase upsert error:', error.message);
             } else {
@@ -98,7 +131,10 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
         const updated = get().products.filter((p) => p.id !== id);
         set({ products: updated });
         try {
-          await supabase.from('products').delete().eq('id', id);
+          const { error } = await supabase.from('products').delete().eq('id', id);
+          if (error) {
+            console.error('Supabase delete error:', error.message);
+          }
         } catch (e) {
           console.log('Error deleting in Supabase:', e);
         }
