@@ -71,10 +71,10 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
                 return ['/images/products/termo-negro.png'];
               })(),
               featured: item.featured === true,
-              isNew: item.is_new === true || item.isNew === true,
-              active: item.active !== false,
-              inStock: item.in_stock !== false && item.inStock !== false,
-              createdAt: item.created_at ?? item.createdAt ?? new Date().toISOString(),
+              isNew: item.isNew === true || item.is_new === true,
+              active: item.active !== false && item.active !== 'false',
+              inStock: item.inStock !== false && item.in_stock !== false && item.inStock !== 'false',
+              createdAt: item.createdAt ?? item.created_at ?? new Date().toISOString(),
             }));
 
             // Usamos directamente los productos de Supabase
