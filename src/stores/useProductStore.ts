@@ -40,7 +40,10 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
       fetchProducts: async () => {
         try {
           set({ loading: true });
-          const { data, error } = await supabase.from('products').select('*');
+          const { data, error } = await supabase
+            .from('products')
+            .select('id, name, slug, description, price, category, material, colors, capacity, images, featured, isNew, is_new, active, in_stock, inStock, created_at, createdAt');
+          
           if (error) {
             console.error('Error cargando de Supabase:', error.message);
           }
@@ -66,8 +69,6 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
                   }
                   return [item.images];
                 }
-                if (typeof item.image === 'string' && item.image.trim() !== '') return [item.image];
-                if (typeof item.image_url === 'string' && item.image_url.trim() !== '') return [item.image_url];
                 return ['/images/products/termo-negro.png'];
               })(),
               featured: Boolean(item.featured),
@@ -77,7 +78,6 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
               createdAt: item.createdAt ?? item.created_at ?? new Date().toISOString(),
             }));
 
-            // Usamos directamente los productos de Supabase
             set({ products: formatted, categories: defaultCategories });
           } else {
             set({ products: initialProducts, categories: defaultCategories });
