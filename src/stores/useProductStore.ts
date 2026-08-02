@@ -126,8 +126,6 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
             const { error } = await supabase.from('products').update(dbData).eq('id', id);
             if (error) {
               console.error('Supabase update error:', error.message);
-            } else {
-              await get().fetchProducts();
             }
           }
         } catch (e) {
