@@ -70,10 +70,10 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
                 if (typeof item.image_url === 'string' && item.image_url.trim() !== '') return [item.image_url];
                 return ['/images/products/termo-negro.png'];
               })(),
-              featured: item.featured === true,
-              isNew: item.isNew === true || item.is_new === true,
-              active: item.active !== false && item.active !== 'false',
-              inStock: item.inStock !== false && item.in_stock !== false && item.inStock !== 'false',
+              featured: Boolean(item.featured),
+              isNew: Boolean(item.isNew || item.is_new),
+              active: item.active !== false && item.active !== 'false' && item.active !== 0,
+              inStock: item.inStock !== false && item.in_stock !== false && item.inStock !== 'false' && item.inStock !== 0,
               createdAt: item.createdAt ?? item.created_at ?? new Date().toISOString(),
             }));
 
