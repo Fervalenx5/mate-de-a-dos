@@ -55,7 +55,21 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
               material: item.material || 'Aluminio / Madera',
               colors: Array.isArray(item.colors) ? item.colors : [],
               capacity: item.capacity || undefined,
-              images: Array.isArray(item.images) && item.images.length > 0 ? item.images : ['/images/products/termo-negro.png'],
+              images: (() => {
+                if (Array.isArray(item.images) && item.images.length > 0) return item.images;
+                if (typeof item.images === 'string' && item.images.trim() !== '') {
+                  try {
+                    const parsed = JSON.parse(item.images);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                  } catch {
+                    return [item.images];
+                  }
+                  return [item.images];
+                }
+                if (typeof item.image === 'string' && item.image.trim() !== '') return [item.image];
+                if (typeof item.image_url === 'string' && item.image_url.trim() !== '') return [item.image_url];
+                return ['/images/products/termo-negro.png'];
+              })(),
               featured: item.featured === true,
               isNew: item.is_new === true || item.isNew === true,
               active: item.active !== false,
