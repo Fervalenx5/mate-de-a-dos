@@ -50,16 +50,30 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
               price: Number(item.price),
               category: item.category || 'mates',
               material: item.material || 'Aluminio / Madera',
-              colors: item.colors || [],
+              colors: Array.isArray(item.colors) ? item.colors : [],
               capacity: item.capacity || undefined,
-              images: item.images || [],
+              images: Array.isArray(item.images) && item.images.length > 0 ? item.images : ['/images/products/termo-negro.png'],
               featured: item.featured ?? false,
               isNew: item.is_new ?? item.isNew ?? false,
               active: item.active ?? true,
               inStock: item.in_stock ?? item.inStock ?? true,
               createdAt: item.created_at ?? item.createdAt ?? new Date().toISOString(),
             }));
-            set({ products: formatted, categories: defaultCategories });
+
+            // Combinar productos de Supabase con los locales (evitando duplicados por id o slug)
+            const combinedMap = new Map<string, Product>();
+            
+            // 1. Agregar productos de Supabase primero (tienen prioridad)
+            formatted.forEach((p) => combinedMap.set(p.id, p));
+
+            // 2. Mantener productos locales si no existen en Supabase
+            initialProducts.forEach((p) => {
+              if (!combinedMap.has(p.id) && !formatted.some(fp => fp.slug === p.slug)) {
+                combinedMap.set(p.id, p);
+              }
+            });
+
+            set({ products: Array.from(combinedMap.values()), categories: defaultCategories });
           } else {
             set({ products: initialProducts, categories: defaultCategories });
           }
