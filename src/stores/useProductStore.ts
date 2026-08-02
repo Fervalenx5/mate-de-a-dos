@@ -41,11 +41,14 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
         try {
           set({ loading: true });
           const { data, error } = await supabase.from('products').select('*');
+          if (error) {
+            console.error('Error cargando de Supabase:', error.message);
+          }
           if (!error && data && data.length > 0) {
             const formatted: Product[] = data.map((item: any) => ({
               id: String(item.id),
               name: item.name,
-              slug: item.slug,
+              slug: item.slug || `producto-${item.id}`,
               description: item.description || '',
               price: Number(item.price),
               category: item.category || 'mates',
@@ -60,20 +63,8 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
               createdAt: item.created_at ?? item.createdAt ?? new Date().toISOString(),
             }));
 
-            // Combinar productos de Supabase con los locales (evitando duplicados por slug o id)
-            const combinedMap = new Map<string, Product>();
-            
-            // 1. Agregar primero todos los productos iniciales locales
-            initialProducts.forEach((p) => {
-              combinedMap.set(p.slug, p);
-            });
-
-            // 2. Sobrescribir o añadir con los productos reales que vienen de Supabase
-            formatted.forEach((p) => {
-              combinedMap.set(p.slug || p.id, p);
-            });
-
-            set({ products: Array.from(combinedMap.values()), categories: defaultCategories });
+            // Usamos directamente los productos de Supabase
+            set({ products: formatted, categories: defaultCategories });
           } else {
             set({ products: initialProducts, categories: defaultCategories });
           }
