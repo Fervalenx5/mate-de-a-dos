@@ -60,17 +60,17 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
               createdAt: item.created_at ?? item.createdAt ?? new Date().toISOString(),
             }));
 
-            // Combinar productos de Supabase con los locales (evitando duplicados por id o slug)
+            // Combinar productos de Supabase con los locales (evitando duplicados por slug o id)
             const combinedMap = new Map<string, Product>();
             
-            // 1. Agregar productos de Supabase primero (tienen prioridad)
-            formatted.forEach((p) => combinedMap.set(p.id, p));
-
-            // 2. Mantener productos locales si no existen en Supabase
+            // 1. Agregar primero todos los productos iniciales locales
             initialProducts.forEach((p) => {
-              if (!combinedMap.has(p.id) && !formatted.some(fp => fp.slug === p.slug)) {
-                combinedMap.set(p.id, p);
-              }
+              combinedMap.set(p.slug, p);
+            });
+
+            // 2. Sobrescribir o añadir con los productos reales que vienen de Supabase
+            formatted.forEach((p) => {
+              combinedMap.set(p.slug || p.id, p);
             });
 
             set({ products: Array.from(combinedMap.values()), categories: defaultCategories });
