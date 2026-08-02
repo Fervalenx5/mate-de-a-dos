@@ -56,10 +56,10 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
               colors: Array.isArray(item.colors) ? item.colors : [],
               capacity: item.capacity || undefined,
               images: Array.isArray(item.images) && item.images.length > 0 ? item.images : ['/images/products/termo-negro.png'],
-              featured: item.featured ?? false,
-              isNew: item.is_new ?? item.isNew ?? false,
-              active: item.active ?? true,
-              inStock: item.in_stock ?? item.inStock ?? true,
+              featured: item.featured === true,
+              isNew: item.is_new === true || item.isNew === true,
+              active: item.active !== false,
+              inStock: item.in_stock !== false && item.inStock !== false,
               createdAt: item.created_at ?? item.createdAt ?? new Date().toISOString(),
             }));
 
