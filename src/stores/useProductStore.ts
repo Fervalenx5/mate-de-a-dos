@@ -42,12 +42,22 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
           set({ loading: true });
           const { data, error } = await supabase.from('products').select('*');
           if (!error && data && data.length > 0) {
-            // Map Supabase column names to frontend camelCase if needed, or use directly
             const formatted = data.map((item: any) => ({
-              ...item,
-              isNew: item.isNew ?? item.is_new ?? false,
-              inStock: item.inStock ?? item.in_stock ?? true,
-              createdAt: item.createdAt ?? item.created_at ?? new Date().toISOString(),
+              id: item.id,
+              name: item.name,
+              slug: item.slug,
+              description: item.description || '',
+              price: Number(item.price),
+              originalPrice: item.original_price ?? item.originalPrice ?? undefined,
+              category: item.category,
+              images: item.images || [],
+              colors: item.colors || [],
+              badge: item.badge || undefined,
+              isNew: item.is_new ?? item.isNew ?? false,
+              active: item.active ?? true,
+              featured: item.featured ?? false,
+              inStock: item.in_stock ?? item.inStock ?? true,
+              createdAt: item.created_at ?? item.createdAt ?? new Date().toISOString(),
             }));
             set({ products: formatted, categories: defaultCategories });
           } else {
