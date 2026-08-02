@@ -75,8 +75,8 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
         const updated = [...get().products, product];
         set({ products: updated });
         try {
-          const payload = {
-            id: product.id,
+          // Si el ID es un string manual o temporal de JS, dejamos que Supabase lo inserte o ignore si rechaza el id
+          const payload: Record<string, any> = {
             name: product.name,
             slug: product.slug,
             description: product.description,
@@ -92,9 +92,17 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
             in_stock: product.inStock ?? true,
             created_at: product.createdAt ?? new Date().toISOString(),
           };
-          const { error } = await supabase.from('products').upsert([payload]);
+          
+          // Solo enviar ID si no empieza con manual-
+          if (!product.id.startsWith('manual-')) {
+            payload.id = product.id;
+          }
+
+          const { error } = await supabase.from('products').insert([payload]);
           if (error) {
-            console.error('Error al guardar producto en Supabase:', error.message);
+            console.error('Error al insertar producto en Supabase:', error.message);
+            // Si falla el insert con error de ID existente, probar upsert
+            await supabase.from('products').upsert([payload]);
           }
         } catch (e) {
           console.log('Error syncing to Supabase:', e);
