@@ -42,7 +42,7 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
           set({ loading: true });
           const { data, error } = await supabase
             .from('products')
-            .select('id, name, slug, description, price, category, images, featured, active');
+            .select('*');
           
           if (error) {
             console.error('Error cargando de Supabase:', error.message);
