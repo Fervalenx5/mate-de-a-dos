@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import MobileNav from "@/components/layout/MobileNav";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
+import { Analytics } from "@vercel/analytics/next";
 
 export const viewport: Viewport = {
   themeColor: '#1F2C1D',
@@ -67,6 +68,7 @@ export default function RootLayout({
         
         <MobileNav />
         <WhatsAppButton />
+        <Analytics />
       </body>
     </html>
   );
