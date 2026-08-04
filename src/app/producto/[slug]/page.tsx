@@ -17,6 +17,7 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const slug = params.slug as string;
   
+  const loading = useProductStore((s) => s.loading);
   const fetchProducts = useProductStore((s) => s.fetchProducts);
   const getProductBySlug = useProductStore((s) => s.getProductBySlug);
   const product = getProductBySlug(slug);
@@ -47,6 +48,14 @@ export default function ProductDetailPage() {
       setTimeout(() => setAdded(false), 2000);
     }
   };
+
+  if (!product && loading) {
+    return (
+      <div className="min-h-screen bg-blanco py-12 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-verde"></div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
