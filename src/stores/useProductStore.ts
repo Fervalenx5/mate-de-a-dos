@@ -59,17 +59,32 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
               colors: Array.isArray(item.colors) ? item.colors : [],
               capacity: item.capacity || undefined,
               images: (() => {
-                if (Array.isArray(item.images) && item.images.length > 0) return item.images;
-                if (typeof item.images === 'string' && item.images.trim() !== '') {
-                  try {
-                    const parsed = JSON.parse(item.images);
-                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-                  } catch {
-                    return [item.images];
+                try {
+                  let val = item.images;
+                  if (typeof val === 'string') {
+                    try { val = JSON.parse(val); } catch {}
                   }
-                  return [item.images];
+                  if (typeof val === 'string') {
+                    try { val = JSON.parse(val); } catch {}
+                  }
+                  let list: string[] = [];
+                  if (Array.isArray(val)) {
+                    list = val.map(x => String(x));
+                  } else if (typeof val === 'string' && val.trim() !== '') {
+                    list = [val];
+                  }
+                  if (list.length === 0) list = ['/images/products/termo-negro.png'];
+
+                  return list.map((url) => {
+                    let clean = url.replace(/[\"'\\]/g, '').trim();
+                    if (!clean.startsWith('http') && !clean.startsWith('/')) {
+                      clean = '/' + clean;
+                    }
+                    return clean;
+                  });
+                } catch {
+                  return ['/images/products/termo-negro.png'];
                 }
-                return ['/images/products/termo-negro.png'];
               })(),
               featured: Boolean(item.featured),
               isNew: Boolean(item.isNew),

@@ -54,6 +54,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           src={product.images && product.images[0] ? product.images[0] : '/images/products/termo-negro.png'}
           alt={product.name}
           fill
+          unoptimized
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />

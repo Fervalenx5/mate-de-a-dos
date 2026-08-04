@@ -82,6 +82,7 @@ export default function ProductDetailPage() {
                 src={product.images && product.images[activeImage] ? product.images[activeImage] : '/images/products/termo-negro.png'}
                 alt={product.name}
                 fill
+                unoptimized
                 className="object-cover"
                 priority
               />
